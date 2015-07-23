@@ -1,0 +1,8 @@
+; CommandLineParser.def : Declares the module parameters for the DLL.
+
+LIBRARY      "CommandLineParser"
+DESCRIPTION  'A Command Line Parser apply for C/C++ Users'
+
+EXPORTS
+	Initilize	@1
+	Deinitilize	@2
