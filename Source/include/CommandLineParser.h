@@ -4,11 +4,12 @@
 
 // Using this function before doing anything with this dynamic library.
 // Input:
-//		char * filePath: The path to the xml file which user defined
+//		const char* const filePath: The path to the xml file which user defined
+//		const char* const commandDelimeter: This will be added before command name you defined in the xml automatically
 //
 // Output:
 //		return 0 if it success, others if it failed
-int __stdcall Initilize(char* filePath = NULL);
+int __stdcall Initilize(const char* const filePath, const char* const commandDelimeter);
 
 
 // Using this function before dispatch dynamic library.

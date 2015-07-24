@@ -1,7 +1,7 @@
 #include "include\ParameterHandler.h"
 
 // This is defined for cmd process function
-typedef bool (*CMD_PROC_FUNC)(std::list<std::string> const & inputParam, std::string & errMsg);
+typedef bool (*CMD_PROC_FUNC)(PCMD_PARAM const inputParam, std::string & errMsg);
 
 // This is defined for cmd and its process function
 typedef struct Cmd2ProcFunc
@@ -10,23 +10,19 @@ typedef struct Cmd2ProcFunc
 	CMD_PROC_FUNC pFunc;
 }CMD2PROCFUNC;
 
-// pre define the proc function here
-bool helpFunc(std::list<std::string> const & inputParam, std::string & errMsg);
-bool uncompressFunc(std::list<std::string> const & inputParam, std::string & errMsg);
-
 Cmd2ProcFunc const g_Cmd2ProcFuncTbl[] =
 {
-	{"", helpFunc},
-	{"-h", helpFunc},
-	{"-help", helpFunc},
-	{"-f", uncompressFunc},
+	{"", NULL},
 };
 
-bool SplitInputParamFromConsole(int argc, char* argv[], InputParamList & consoleInput)
+bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD consoleInput, const char* const cmdTag)
 {
-	PINPUT_PARAM pInputParam = NULL;
-	INPUT_PARAM tempParam;
-	const std::string strCommandTag = COMMAND_TAG_CHAR;
+	if( consoleInput != NULL ) {
+		return false;
+	}
+
+	PINPUT_CMD preCmdNode = NULL;
+	PCMD_PARAM preParamNode = NULL;
 
 	// Ignore first element since it's program's name
 	for(int i = 1; i < argc; i++)
@@ -37,34 +33,43 @@ bool SplitInputParamFromConsole(int argc, char* argv[], InputParamList & console
 		}
 		
 		// If this param is command tag char
-		if( 0 == memcmp(argv[i], strCommandTag.c_str(), strCommandTag.size()) )
+		if( 0 == memcmp(argv[i], cmdTag, strlen(cmdTag)) )
 		{
-			if( pInputParam != NULL )
-			{
-				consoleInput.push_back(*pInputParam);
+			PINPUT_CMD pCmdNode = (PINPUT_CMD)malloc(sizeof(INPUT_CMD));
+
+			memcpy(pCmdNode->cmd, argv[i], strlen(argv[i]));
+
+			if( consoleInput == NULL ) {
+				consoleInput = pCmdNode;
+			}
+			else {
+				preCmdNode->p_nextCmd = pCmdNode;
 			}
 
-			tempParam = InputParam();
-
-			pInputParam = &tempParam;
-
-			pInputParam->strCmd.assign(argv[i]);
+			preCmdNode = pCmdNode;
+			pCmdNode = NULL;
 		}
 		else
 		{
-			if( pInputParam != NULL )
+			// If it's null means it's a invalid unknow meaning string
+			if( preCmdNode != NULL )
 			{
-				pInputParam->paramList.push_back(std::string(argv[i]));
+				PCMD_PARAM pParamNode = (PCMD_PARAM)malloc(sizeof(CMD_PARAM));
+
+				if( preCmdNode->params == NULL ) {
+					preCmdNode->params = pParamNode;
+				}
+				else {
+					preParamNode->p_nextParam = pParamNode;
+				}
+
+				preParamNode = pParamNode;
+				pParamNode = NULL;
 			}
 		}
 	}
 
-	if( pInputParam != NULL )
-	{
-		consoleInput.push_back(*pInputParam);
-	}
-
-	if( consoleInput.empty() )
+	if( consoleInput == NULL )
 	{
 		printf("Unknow option.\r\nTry VIPackageHandler.exe -help/-h for more information\r\n");
 		return false;
@@ -74,11 +79,11 @@ bool SplitInputParamFromConsole(int argc, char* argv[], InputParamList & console
 }
 
 // This function is used to find the cmd and its proccess function in the pre defined table
-CMD_PROC_FUNC FindInCmd2ProcFuncTbl(std::string const & cmd)
+CMD_PROC_FUNC FindInCmd2ProcFuncTbl(const char* const cmd)
 {
 	for(int i = 0; i < sizeof(g_Cmd2ProcFuncTbl); ++i)
 	{
-		if( 0 == memcmp(g_Cmd2ProcFuncTbl[i].cmd,cmd.c_str(),cmd.size()) )
+		if( 0 == memcmp(g_Cmd2ProcFuncTbl[i].cmd, cmd, strlen(cmd)) )
 		{
 			return g_Cmd2ProcFuncTbl[i].pFunc;
 		}
@@ -88,43 +93,27 @@ CMD_PROC_FUNC FindInCmd2ProcFuncTbl(std::string const & cmd)
 }
 
 // Process all the option inputed by the user, order by the input order
-bool ProcessAllTheInputCmd(InputParamList const & consoleInput)
+bool ProcessAllTheInputCmd(PINPUT_CMD const consoleInput)
 {
 	CMD_PROC_FUNC pProcFunc = NULL;
 	std::string errMsg;
 
-	for( InputParamList::const_iterator iter = consoleInput.begin(); iter != consoleInput.end(); ++iter )
-	{
-		pProcFunc = FindInCmd2ProcFuncTbl(iter->strCmd);
+	for( PINPUT_CMD pNode = consoleInput; pNode != NULL; pNode = pNode->p_nextCmd ) {
+
+		pProcFunc = FindInCmd2ProcFuncTbl(pNode->cmd);
 
 		if( pProcFunc == NULL )
 		{
-			printf("Unknow option: %s\r\nTry VIPackageHandler.exe -help/-h for more information\r\n", iter->strCmd.c_str());
+			printf("Unknow option: %s\r\nTry VIPackageHandler.exe -help/-h for more information\r\n", pNode->cmd);
 			return false;
 		}
 
-		if( !(*pProcFunc)(iter->paramList,errMsg) )
+		if( !(*pProcFunc)(pNode->params,errMsg) )
 		{
 			printf("%s\r\n",errMsg.c_str());
 			return false;
 		}
 	}
 
-	return true;
-}
-
-// Main implement of help option
-bool helpFunc(std::list<std::string> const & inputParam, std::string & errMsg)
-{
-	printf("usage: VIPackageHandler.exe [option] [arg]\r\n");
-	printf("Options and arguments:\r\n");
-	printf("-f [source vi package file path] [dest uncompress file path]\r\n");
-	printf("This option is used to uncompress a vip file from src file path to dst file path\r\n");
-	printf("eg: VIPackageHandler.exe -f \"C:\\\" \"D:\\\"\r\n");
-	return true;
-}
-
-bool uncompressFunc(std::list<std::string> const & inputParam, std::string & errMsg)
-{
 	return true;
 }

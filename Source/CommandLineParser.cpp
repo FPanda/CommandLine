@@ -8,10 +8,21 @@
 
 #include "include\ParameterHandler.h"
 
-int __stdcall Initilize( char* filePath = NULL ) {
+char* g_commandDelimeter = NULL;
+
+int __stdcall Initilize( const char* const filePath, const char* const commandDelimeter ) {
+	g_commandDelimeter = (char*)malloc((MAX_INPUT_CMD_DELIMETER_SIZE+1)*sizeof(char));
+	memcpy(g_commandDelimeter, commandDelimeter, (MAX_INPUT_CMD_DELIMETER_SIZE+1)*sizeof(char));
+	// To prevent from string overflow
+	g_commandDelimeter[MAX_INPUT_CMD_DELIMETER_SIZE] = '\0';
+
 	return 0;
 }
 
 int __stdcall Deinitilize(void) {
+	if( NULL != g_commandDelimeter ) {
+		free(g_commandDelimeter);
+	}
+
 	return 0;
 }
