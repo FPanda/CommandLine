@@ -8,9 +8,10 @@
 
 #include "include\ParameterHandler.h"
 
-int dllmain(int argc, char* argv[])
-{
-	InputParamList consoleInput;
+int __stdcall Initilize( char* filePath = NULL ) {
+	return 0;
+}
 
+int __stdcall Deinitilize(void) {
 	return 0;
 }

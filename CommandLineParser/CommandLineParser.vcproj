@@ -177,11 +177,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Source\CommandLineParser.def"
+				RelativePath=".\CommandLineParser.def"
 				>
 			</File>
 			<File
 				RelativePath="..\Source\ParameterHandler.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\win32DllMain.cpp"
 				>
 			</File>
 		</Filter>
