@@ -1,10 +1,8 @@
 #ifndef _COMMAND_LINE_PARSER_COMMON_H_
 #define _COMMAND_LINE_PARSER_COMMON_H_
 
-#pragma once
-
-// Used by error message and will be delete later
-#include <string>
+#include "stddef.h"
+#include "memory.h"
 
 // Macros
 #define MAXCMDLENGTH					1024
@@ -14,6 +12,8 @@
 #define MAX_INPUT_CMD_SIZE				64
 // Define the max size of a command delimeter
 #define MAX_INPUT_CMD_DELIMETER_SIZE	2
+// Define the max size of error message
+#define MAX_ERROR_MSG_LENGTH			512
 
 // This struct is used to store parameters of one command
 typedef struct CmdParam {
@@ -34,5 +34,8 @@ typedef struct InputCmd {
 	struct InputCmd* p_nextCmd;
 	InputCmd(void):params(NULL),p_nextCmd(NULL) {memset(cmd, 0x00, MAX_INPUT_CMD_SIZE*sizeof(char));}
 }INPUT_CMD, *PINPUT_CMD;
+
+// This is defined for cmd process function
+typedef bool (*CMD_PROC_FUNC)(PCMD_PARAM const inputParam, void* reserved, char* errMsg);
 
 #endif

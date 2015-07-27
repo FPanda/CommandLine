@@ -1,7 +1,4 @@
-#include "include\ParameterHandler.h"
-
-// This is defined for cmd process function
-typedef bool (*CMD_PROC_FUNC)(PCMD_PARAM const inputParam, std::string & errMsg);
+#include "include/ParameterHandler.h"
 
 // This is defined for cmd and its process function
 typedef struct Cmd2ProcFunc
@@ -103,7 +100,7 @@ CMD_PROC_FUNC findInCmd2ProcFuncTbl(const char* const cmd)
 bool processAllTheInputCmd(PINPUT_CMD const consoleInput)
 {
 	CMD_PROC_FUNC pProcFunc = NULL;
-	std::string errMsg;
+	char errMsg[MAX_ERROR_MSG_LENGTH];
 
 	for( PINPUT_CMD pNode = consoleInput; pNode != NULL; pNode = pNode->p_nextCmd ) {
 
@@ -114,12 +111,12 @@ bool processAllTheInputCmd(PINPUT_CMD const consoleInput)
 			return false;
 		}
 
-		if( !(*pProcFunc)(pNode->params,errMsg) )
+		if( !(*pProcFunc)(pNode->params, NULL, errMsg) )
 		{
-			printf("%s\r\n",errMsg.c_str());
 			return false;
 		}
 	}
 
 	return true;
 }
+

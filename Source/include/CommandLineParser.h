@@ -2,6 +2,12 @@
 #define _COMMAND_LINE_PARSER_H_
 #include "Common.h"
 
+#ifdef _WIN32
+#define CMDPARSER_EXPORT    __stdcall
+#else
+#define CMDPARSER_EXPORT
+#endif
+
 // Using this function before doing anything with this dynamic library.
 // Input:
 //		const char* const filePath: The path to the xml file which user defined
@@ -9,17 +15,17 @@
 //
 // Output:
 //		return 0 if it success, others if it failed
-int __stdcall initilize(const char* const filePath, const char* const commandDelimeter);
+int CMDPARSER_EXPORT initilize(const char* const filePath, const char* const commandDelimeter);
 
 
 // Using this function to get split command and its params returned by a list
 // Input:
 //		int argc: input agurment numbers input by main function
 //		char* argv[]: input agurments input by main function
-//		PINPUT_CMD* consoleInput: A list which contain the split command and its params
+//		PINPUT_CMD* consoleInput: A NULL pointer which returns by function contains the split command and its params
 // Output:
 //		return 0 if it success, others if it failed
-int __stdcall getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* consoleInput);
+int CMDPARSER_EXPORT  getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* consoleInput);
 
 
 // Using this function before dispatch dynamic library.
@@ -28,6 +34,6 @@ int __stdcall getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* consoleInpu
 //
 // Output:
 //		return 0 if it success, others if it failed
-int __stdcall deinitilize(PINPUT_CMD consoleInput);
+int CMDPARSER_EXPORT deinitilize(PINPUT_CMD consoleInput);
 
 #endif
