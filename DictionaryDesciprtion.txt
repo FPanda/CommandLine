@@ -1,0 +1,7 @@
++++ CommandLine
++++=== CommandLineParser ( this folder contains the visual studio project config files )
++++======= CommandLineParser.def ( Windows dll exported function define )
++++======= win32DllMain.cpp ( Windows dll main function )
++++=== Source ( CommandLineParser source code include head files)
++++=== TestDll ( Test module in visual studio project )
++++=== CommandLineParser.sln ( Visual studio solution file, you can open the whole windows project by this file )
