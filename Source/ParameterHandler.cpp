@@ -15,9 +15,13 @@ Cmd2ProcFunc const g_Cmd2ProcFuncTbl[] =
 	{"", NULL},
 };
 
-bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD consoleInput, const char* const cmdTag)
+bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD* consoleInput, const char* const cmdTag)
 {
-	if( consoleInput != NULL ) {
+	if( consoleInput == NULL ) {
+		return false;
+	}
+
+	if( *consoleInput != NULL ) {
 		return false;
 	}
 
@@ -36,11 +40,12 @@ bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD consoleInput,
 		if( 0 == memcmp(argv[i], cmdTag, strlen(cmdTag)) )
 		{
 			PINPUT_CMD pCmdNode = (PINPUT_CMD)malloc(sizeof(INPUT_CMD));
+			memset(pCmdNode, 0x00, sizeof(INPUT_CMD));
 
 			memcpy(pCmdNode->cmd, argv[i], strlen(argv[i]));
 
-			if( consoleInput == NULL ) {
-				consoleInput = pCmdNode;
+			if( *consoleInput == NULL ) {
+				*consoleInput = pCmdNode;
 			}
 			else {
 				preCmdNode->p_nextCmd = pCmdNode;
@@ -55,6 +60,9 @@ bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD consoleInput,
 			if( preCmdNode != NULL )
 			{
 				PCMD_PARAM pParamNode = (PCMD_PARAM)malloc(sizeof(CMD_PARAM));
+				memset(pParamNode, 0x00, sizeof(CMD_PARAM));
+
+				memcpy(pParamNode->param, argv[i], strlen(argv[i]));
 
 				if( preCmdNode->params == NULL ) {
 					preCmdNode->params = pParamNode;
@@ -69,9 +77,8 @@ bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD consoleInput,
 		}
 	}
 
-	if( consoleInput == NULL )
+	if( *consoleInput == NULL )
 	{
-		printf("Unknow option.\r\nTry VIPackageHandler.exe -help/-h for more information\r\n");
 		return false;
 	}
 
@@ -79,7 +86,7 @@ bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD consoleInput,
 }
 
 // This function is used to find the cmd and its proccess function in the pre defined table
-CMD_PROC_FUNC FindInCmd2ProcFuncTbl(const char* const cmd)
+CMD_PROC_FUNC findInCmd2ProcFuncTbl(const char* const cmd)
 {
 	for(int i = 0; i < sizeof(g_Cmd2ProcFuncTbl); ++i)
 	{
@@ -93,18 +100,17 @@ CMD_PROC_FUNC FindInCmd2ProcFuncTbl(const char* const cmd)
 }
 
 // Process all the option inputed by the user, order by the input order
-bool ProcessAllTheInputCmd(PINPUT_CMD const consoleInput)
+bool processAllTheInputCmd(PINPUT_CMD const consoleInput)
 {
 	CMD_PROC_FUNC pProcFunc = NULL;
 	std::string errMsg;
 
 	for( PINPUT_CMD pNode = consoleInput; pNode != NULL; pNode = pNode->p_nextCmd ) {
 
-		pProcFunc = FindInCmd2ProcFuncTbl(pNode->cmd);
+		pProcFunc = findInCmd2ProcFuncTbl(pNode->cmd);
 
 		if( pProcFunc == NULL )
 		{
-			printf("Unknow option: %s\r\nTry VIPackageHandler.exe -help/-h for more information\r\n", pNode->cmd);
 			return false;
 		}
 

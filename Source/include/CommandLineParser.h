@@ -1,6 +1,6 @@
 #ifndef _COMMAND_LINE_PARSER_H_
 #define _COMMAND_LINE_PARSER_H_
-#include "include\Common.h"
+#include "Common.h"
 
 // Using this function before doing anything with this dynamic library.
 // Input:
@@ -9,7 +9,17 @@
 //
 // Output:
 //		return 0 if it success, others if it failed
-int __stdcall Initilize(const char* const filePath, const char* const commandDelimeter);
+int __stdcall initilize(const char* const filePath, const char* const commandDelimeter);
+
+
+// Using this function to get split command and its params returned by a list
+// Input:
+//		int argc: input agurment numbers input by main function
+//		char* argv[]: input agurments input by main function
+//		PINPUT_CMD* consoleInput: A list which contain the split command and its params
+// Output:
+//		return 0 if it success, others if it failed
+int __stdcall getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* consoleInput);
 
 
 // Using this function before dispatch dynamic library.
@@ -18,6 +28,6 @@ int __stdcall Initilize(const char* const filePath, const char* const commandDel
 //
 // Output:
 //		return 0 if it success, others if it failed
-int __stdcall Deinitilize(void);
+int __stdcall deinitilize(PINPUT_CMD consoleInput);
 
 #endif

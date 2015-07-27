@@ -4,5 +4,6 @@ LIBRARY      "CommandLineParser"
 DESCRIPTION  'A Command Line Parser apply for C/C++ Users'
 
 EXPORTS
-	Initilize	@1
-	Deinitilize	@2
+	initilize				@1
+	deinitilize				@2
+	getAllInputCmdList		@3
