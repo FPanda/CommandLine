@@ -10,9 +10,9 @@
 #include "include/ParameterHandler.h"
 #include "include/CommandLineParser.h"
 
-char* g_commandDelimeter = NULL;
+static char* g_commandDelimeter = NULL;
 
-int CMDPARSER_EXPORT initilize( const char* const filePath, const char* const commandDelimeter ) {
+CMDPARSER_EXPORT int initilize( const char* const filePath, const char* const commandDelimeter ) {
 	g_commandDelimeter = (char*)malloc((MAX_INPUT_CMD_DELIMETER_SIZE+1)*sizeof(char));
 	memset(g_commandDelimeter, 0x00, (MAX_INPUT_CMD_DELIMETER_SIZE+1)*sizeof(char));
 	memcpy(g_commandDelimeter, commandDelimeter, (MAX_INPUT_CMD_DELIMETER_SIZE+1)*sizeof(char));
@@ -22,14 +22,30 @@ int CMDPARSER_EXPORT initilize( const char* const filePath, const char* const co
 	return 0;
 }
 
-int CMDPARSER_EXPORT  getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* consoleInput) {
+CMDPARSER_EXPORT  int getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* consoleInput) {
 	return splitInputParamFromConsole(argc, argv, consoleInput, g_commandDelimeter);
 }
 
-int CMDPARSER_EXPORT  deinitilize(PINPUT_CMD consoleInput) {
+CMDPARSER_EXPORT  int deinitilize(PINPUT_CMD* consoleInput) {
 	if( NULL != g_commandDelimeter ) {
 		free(g_commandDelimeter);
 	}
+
+	PINPUT_CMD tmpInput = NULL;
+	PINPUT_CMD freeInput = NULL;
+
+	if( NULL != *consoleInput ) {
+		tmpInput = (*consoleInput)->p_nextCmd;
+		free(consoleInput);
+
+		while(tmpInput != NULL) {
+			freeInput = tmpInput;
+			tmpInput = tmpInput->p_nextCmd;
+			free(freeInput);
+		}
+	}
+
+	*consoleInput = NULL;
 
 	return 0;
 }

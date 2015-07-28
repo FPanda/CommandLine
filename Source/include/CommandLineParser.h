@@ -3,9 +3,9 @@
 #include "Common.h"
 
 #ifdef _WIN32
-#define CMDPARSER_EXPORT    __stdcall
-#else
 #define CMDPARSER_EXPORT
+#else
+#define CMDPARSER_EXPORT    __attribute__ ((visibility("default")))
 #endif
 
 // Using this function before doing anything with this dynamic library.
@@ -15,7 +15,7 @@
 //
 // Output:
 //		return 0 if it success, others if it failed
-int CMDPARSER_EXPORT initilize(const char* const filePath, const char* const commandDelimeter);
+CMDPARSER_EXPORT int initilize(const char* const filePath, const char* const commandDelimeter);
 
 
 // Using this function to get split command and its params returned by a list
@@ -25,7 +25,7 @@ int CMDPARSER_EXPORT initilize(const char* const filePath, const char* const com
 //		PINPUT_CMD* consoleInput: A NULL pointer which returns by function contains the split command and its params
 // Output:
 //		return 0 if it success, others if it failed
-int CMDPARSER_EXPORT  getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* consoleInput);
+CMDPARSER_EXPORT  int getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* consoleInput);
 
 
 // Using this function before dispatch dynamic library.
@@ -34,6 +34,6 @@ int CMDPARSER_EXPORT  getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* con
 //
 // Output:
 //		return 0 if it success, others if it failed
-int CMDPARSER_EXPORT deinitilize(PINPUT_CMD consoleInput);
+CMDPARSER_EXPORT int deinitilize(PINPUT_CMD* consoleInput);
 
 #endif
