@@ -1,7 +1,6 @@
 #ifndef _COMMAND_LINE_PARSER_COMMON_H_
 #define _COMMAND_LINE_PARSER_COMMON_H_
 
-#include "stddef.h"
 #include "memory.h"
 
 // Macros

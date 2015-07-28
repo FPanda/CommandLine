@@ -5,7 +5,7 @@ LDFLAGS := -shared -fPIC
 SOFLAGS := -fvisibility=hidden
 SOURCE  := $(wildcard *.cpp)
 OBJS    := $(patsubst %.cpp,%.o,$(SOURCE))
-TARGET_LIB := CommandLineParser.so
+TARGET_LIB := libCommandLineParser.so
 
 all:$(OBJS)
 	echo $(OBJS)
