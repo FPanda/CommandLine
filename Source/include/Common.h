@@ -2,6 +2,7 @@
 #define _COMMAND_LINE_PARSER_COMMON_H_
 
 #include "memory.h"
+#include "stdio.h"
 
 // Macros
 #define MAXCMDLENGTH					1024

@@ -9,6 +9,7 @@
 #include "include/Common.h"
 #include "include/ParameterHandler.h"
 #include "include/CommandLineParser.h"
+#include "include/XmlParser.h"
 
 static char* g_commandDelimeter = NULL;
 
@@ -18,6 +19,10 @@ CMDPARSER_EXPORT int initilize( const char* const filePath, const char* const co
 	memcpy(g_commandDelimeter, commandDelimeter, (MAX_INPUT_CMD_DELIMETER_SIZE+1)*sizeof(char));
 	// To prevent from string overflow
 	g_commandDelimeter[MAX_INPUT_CMD_DELIMETER_SIZE] = '\0';
+
+	loadXmlFile(filePath);
+
+	ParseXmlFile();
 
 	return 0;
 }
@@ -36,7 +41,7 @@ CMDPARSER_EXPORT  int deinitilize(PINPUT_CMD* consoleInput) {
 
 	if( NULL != *consoleInput ) {
 		tmpInput = (*consoleInput)->p_nextCmd;
-		free(consoleInput);
+		free(*consoleInput);
 
 		while(tmpInput != NULL) {
 			freeInput = tmpInput;

@@ -1,4 +1,5 @@
 #include "include/ParameterHandler.h"
+// ParameterHandler is used to parser all the arguments input by user
 
 // This is defined for cmd and its process function
 typedef struct Cmd2ProcFunc
@@ -7,7 +8,7 @@ typedef struct Cmd2ProcFunc
 	CMD_PROC_FUNC pFunc;
 }CMD2PROCFUNC;
 
-Cmd2ProcFunc const g_Cmd2ProcFuncTbl[] =
+static Cmd2ProcFunc g_Cmd2ProcFuncTbl[] =
 {
 	{"", NULL},
 };
