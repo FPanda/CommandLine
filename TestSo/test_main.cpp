@@ -6,9 +6,9 @@ int main(int argc, char* argv[])
 {
     PINPUT_CMD input = NULL;
     initilize(NULL,"-");
-    getAllInputCmdList(argc, argv, &input);
+    getAllInputCmdList(argc, argv, input);
     printf("%s", input->cmd);
-    deinitilize(&input);
+    deinitilize(input);
     return 0;
 }
 

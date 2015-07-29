@@ -11,8 +11,8 @@ int main(int argc, char* argv[])
 {
 	PINPUT_CMD input = NULL;
 	initilize("..\\Source\\test.xml","-");
-	getAllInputCmdList(argc, argv, &input);
-	deinitilize(&input);
+	getAllInputCmdList(argc, argv, input);
+	deinitilize(input);
 	return 0;
 }
 

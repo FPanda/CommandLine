@@ -79,6 +79,23 @@ int parseCommandStructure(PCMD2PROCFUNC &cmdTbl, const XMLElement* hCommandNode)
 		return -1;
 	}
 
+	const XMLElement* description = funcName->NextSiblingElement();
+
+	if( NULL == description ) {
+		return -1;
+	}
+
+	if( 0 != memcmp(description->Value(), NODE_DESCRIP_NAME, strlen(NODE_DESCRIP_NAME)) ) {
+		// Unknow description name element
+		return -1;
+	}
+
+	const char* decb = description->GetText();
+
+	if( strlen(decb) + 1 > MAX_DESCRIB_SIZE ) {
+		return -1;
+	}
+
 	PCMD2PROCFUNC pCmd2Func = (PCMD2PROCFUNC)malloc(sizeof(CMD2PROCFUNC));
 
 	*pCmd2Func = CMD2PROCFUNC();
@@ -92,6 +109,8 @@ int parseCommandStructure(PCMD2PROCFUNC &cmdTbl, const XMLElement* hCommandNode)
 	pCmd2Func->paramNum = iParamNum;
 
 	memcpy(pCmd2Func->func, func, strlen(func));
+
+	memcpy(pCmd2Func->decb, decb, strlen(decb));
 
 	if( cmdTbl == NULL ) {
 		cmdTbl = pCmd2Func;
@@ -155,8 +174,28 @@ int parseXmlFile(PCMD2PROCFUNC &cmdTbl) {
 			hCommandNode = NULL;
 			continue;			
 		}
+
+		hCommandNode = hCommandNode->NextSiblingElement();
 	};
 
 	return err;
 }
 
+int closeXmlFile(PCMD2PROCFUNC &cmdTbl) {
+	PCMD2PROCFUNC tmpInput = NULL;
+	PCMD2PROCFUNC freeInput = NULL;
+
+	if( NULL != cmdTbl ) {
+		tmpInput = cmdTbl->nextPointer;
+		free(cmdTbl);
+
+		while(tmpInput != NULL) {
+			freeInput = tmpInput;
+			tmpInput = tmpInput->nextPointer;
+			free(freeInput);
+		}
+	}
+
+	cmdTbl = NULL;
+	return 0;
+}

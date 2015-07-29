@@ -12,6 +12,8 @@
 #define MAX_INPUT_CMD_SIZE				64
 // Define the max size of function name
 #define MAX_FUNC_NAME_SIZE				64
+// Define the max size of one command description
+#define MAX_DESCRIB_SIZE				128
 // Define the max size of a command delimeter
 #define MAX_INPUT_CMD_DELIMETER_SIZE	2
 // Define the max size of error message

@@ -28,21 +28,27 @@ CMDPARSER_EXPORT int initilize( const char* const filePath, const char* const co
 	return 0;
 }
 
-CMDPARSER_EXPORT  int getAllInputCmdList(int argc, char* argv[], PINPUT_CMD* consoleInput) {
+CMDPARSER_EXPORT int getAllInputCmdList(int argc, char* argv[], PINPUT_CMD &consoleInput) {
 	return splitInputParamFromConsole(argc, argv, consoleInput, g_commandDelimeter);
 }
 
-CMDPARSER_EXPORT  int deinitilize(PINPUT_CMD* consoleInput) {
+CMDPARSER_EXPORT int processAllInputCmd(PINPUT_CMD const consoleInput) {
+	return 0;
+}
+
+CMDPARSER_EXPORT  int deinitilize(PINPUT_CMD &consoleInput) {
 	if( NULL != g_commandDelimeter ) {
 		free(g_commandDelimeter);
 	}
 
+	closeXmlFile(g_Cmd2ProcFuncTbl);
+
 	PINPUT_CMD tmpInput = NULL;
 	PINPUT_CMD freeInput = NULL;
 
-	if( NULL != *consoleInput ) {
-		tmpInput = (*consoleInput)->p_nextCmd;
-		free(*consoleInput);
+	if( NULL != consoleInput ) {
+		tmpInput = (consoleInput)->p_nextCmd;
+		free(consoleInput);
 
 		while(tmpInput != NULL) {
 			freeInput = tmpInput;
@@ -51,7 +57,7 @@ CMDPARSER_EXPORT  int deinitilize(PINPUT_CMD* consoleInput) {
 		}
 	}
 
-	*consoleInput = NULL;
+	consoleInput = NULL;
 
 	return 0;
 }

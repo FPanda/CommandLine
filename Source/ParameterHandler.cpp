@@ -1,13 +1,9 @@
 #include "include/ParameterHandler.h"
 // ParameterHandler is used to parser all the arguments input by user
 
-bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD* consoleInput, const char* const cmdTag)
+bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD &consoleInput, const char* const cmdTag)
 {
-	if( consoleInput == NULL ) {
-		return false;
-	}
-
-	if( *consoleInput != NULL ) {
+	if( consoleInput != NULL ) {
 		return false;
 	}
 
@@ -30,8 +26,8 @@ bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD* consoleInput
 
 			memcpy(pCmdNode->cmd, argv[i], strlen(argv[i]));
 
-			if( *consoleInput == NULL ) {
-				*consoleInput = pCmdNode;
+			if( consoleInput == NULL ) {
+				consoleInput = pCmdNode;
 			}
 			else {
 				preCmdNode->p_nextCmd = pCmdNode;
@@ -63,7 +59,7 @@ bool splitInputParamFromConsole(int argc, char* argv[], PINPUT_CMD* consoleInput
 		}
 	}
 
-	if( *consoleInput == NULL )
+	if( consoleInput == NULL )
 	{
 		return false;
 	}

@@ -6,4 +6,16 @@
         <handler>testFunc</handler>
         <description>Test for the xml</description>
     </command>
+    <command>
+        <commandname>file</commandname>
+        <parameternumber>1</parameternumber>
+        <handler>testFunc</handler>
+        <description>second command</description>
+    </command>
+    <command>
+        <commandname>m</commandname>
+        <parameternumber>0</parameternumber>
+        <handler>testFunc</handler>
+        <description>third command</description>
+    </command>
 </arguments>
