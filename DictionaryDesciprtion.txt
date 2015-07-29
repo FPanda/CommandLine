@@ -3,5 +3,8 @@
 +++======= CommandLineParser.def ( Windows dll exported function define )
 +++======= win32DllMain.cpp ( Windows dll main function )
 +++=== Source ( CommandLineParser source code include head files)
++++======= Makefile ( For linux support )
++++======= test.xml ( A xml template for developers to reference )
 +++=== TestDll ( Test module in visual studio project )
++++=== TestSo ( Test module supplied for linux )
 +++=== CommandLineParser.sln ( Visual studio solution file, you can open the whole windows project by this file )

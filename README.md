@@ -4,4 +4,7 @@
   
   With the command line parser, it allows developers to focus on the features they should develop.
   
+##2. Consists of CommandLineParser  
+  For detail information, please check the DictionaryDesciprtion.txt  
   
+
