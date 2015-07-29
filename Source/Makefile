@@ -1,7 +1,7 @@
 CC      := g++
 LD      := ld
 CFLAGS  := -fPIC
-LDFLAGS := -shared -fPIC
+LDFLAGS := -shared
 SOFLAGS := -fvisibility=hidden
 SOURCE  := $(wildcard *.cpp)
 OBJS    := $(patsubst %.cpp,%.o,$(SOURCE))

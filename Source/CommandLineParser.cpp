@@ -6,7 +6,7 @@
 // This version's purpose is to parser the xml which user defined and parse the command line options based on the xml.
 // I consider to use tinyxml-2 to parse xml. I'll finish this part in this weekend.
 
-#include "include/common.h"
+#include "include/Common.h"
 #include "include/ParameterHandler.h"
 #include "include/CommandLineParser.h"
 
