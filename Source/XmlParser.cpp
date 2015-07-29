@@ -157,8 +157,11 @@ int parseXmlFile(PCMD2PROCFUNC &cmdTbl) {
 
 	PCMD2PROCFUNC tmpTblPointer = NULL;
 
-	if( 0 != err ) {
+	if( 0 == err ) {
 		tmpTblPointer = cmdTbl;
+	}
+	else {
+		return -1;
 	}
 
 	hCommandNode = hCommandNode->NextSiblingElement();
