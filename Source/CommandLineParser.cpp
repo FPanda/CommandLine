@@ -11,6 +11,7 @@
 #include "include/CommandLineParser.h"
 #include "include/XmlParser.h"
 
+static PCMD2PROCFUNC g_Cmd2ProcFuncTbl = NULL;
 static char* g_commandDelimeter = NULL;
 
 CMDPARSER_EXPORT int initilize( const char* const filePath, const char* const commandDelimeter ) {
@@ -22,7 +23,7 @@ CMDPARSER_EXPORT int initilize( const char* const filePath, const char* const co
 
 	loadXmlFile(filePath);
 
-	ParseXmlFile();
+	parseXmlFile(g_Cmd2ProcFuncTbl);
 
 	return 0;
 }

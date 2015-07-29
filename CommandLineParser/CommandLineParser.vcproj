@@ -192,6 +192,10 @@
 				RelativePath=".\win32DllMain.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\Source\XmlParser.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -212,6 +216,10 @@
 			</File>
 			<File
 				RelativePath="..\Source\include\tinyxml2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\include\XmlParser.h"
 				>
 			</File>
 		</Filter>

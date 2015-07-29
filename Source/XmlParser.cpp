@@ -1,7 +1,15 @@
 #include "include/Common.h"
 #include "include/tinyxml2.h"
+#include "include/XmlParser.h"
 
 using namespace tinyxml2;
+
+#define ROOT_ELEMENT_NAME		"arguments"
+#define MAIN_NODE_NAME			"command"
+#define NODE_CMD_NAME			"commandname"
+#define NODE_PARAM_NUM_NAME		"parameternumber"
+#define NODE_HANDLE_FUNC_NAME	"handler"
+#define NODE_DESCRIP_NAME		"description"
 
 XMLDocument* g_xmlDoc = NULL;
 
@@ -19,8 +27,84 @@ int loadXmlFile(const char* const filePath) {
 	return err;
 }
 
-int ParseXmlFile(void) {
-	XMLError err = XML_NO_ERROR;
+int parseCommandStructure(PCMD2PROCFUNC &cmdTbl, const XMLElement* hCommandNode) {
+	const XMLElement* name = hCommandNode->FirstChildElement();
+
+	if( NULL == name ) {
+		return -1;
+	}
+
+	if( 0 != memcmp(name->Value(), NODE_CMD_NAME, strlen(NODE_CMD_NAME)) ) {
+		// Unknow command name element
+		return -1;
+	}
+	
+	const char* cmd = name->GetText();
+
+	if( strlen(cmd) + 1 > MAX_INPUT_CMD_SIZE ) {
+		return -1;
+	}
+
+	const XMLElement* paramNum = name->NextSiblingElement();
+
+	if( NULL == paramNum ) {
+		return -1;
+	}
+
+	if( 0 != memcmp(paramNum->Value(), NODE_PARAM_NUM_NAME, strlen(NODE_PARAM_NUM_NAME)) ) {
+		// Unknow param name element
+		return -1;
+	}
+
+	int iParamNum = 0;
+
+	if( 0 != paramNum->QueryIntText(&iParamNum) ) {
+		return -1;
+	}
+
+	const XMLElement* funcName = paramNum->NextSiblingElement();
+
+	if( NULL == funcName ) {
+		return -1;
+	}
+
+	if( 0 != memcmp(funcName->Value(), NODE_HANDLE_FUNC_NAME, strlen(NODE_HANDLE_FUNC_NAME)) ) {
+		// Unknow handle name element
+		return -1;
+	}
+
+	const char* func = funcName->GetText();
+
+	if( strlen(cmd) + 1 > MAX_FUNC_NAME_SIZE ) {
+		return -1;
+	}
+
+	PCMD2PROCFUNC pCmd2Func = (PCMD2PROCFUNC)malloc(sizeof(CMD2PROCFUNC));
+
+	*pCmd2Func = CMD2PROCFUNC();
+
+	if( pCmd2Func == NULL ) {
+		return -1;
+	}
+
+	memcpy(pCmd2Func->cmd, cmd, strlen(cmd));
+
+	pCmd2Func->paramNum = iParamNum;
+
+	memcpy(pCmd2Func->func, func, strlen(func));
+
+	if( cmdTbl == NULL ) {
+		cmdTbl = pCmd2Func;
+	}
+	else {
+		cmdTbl->nextPointer = pCmd2Func;
+	}
+
+	return 0;
+}
+
+int parseXmlFile(PCMD2PROCFUNC &cmdTbl) {
+	int err = XML_NO_ERROR;
 
 	const XMLElement* handler = NULL;
 
@@ -31,6 +115,24 @@ int ParseXmlFile(void) {
 	if( NULL == handler ) {
 		return -1;
 	}
+
+	if( 0 != memcmp(handler->Value(), ROOT_ELEMENT_NAME, strlen(ROOT_ELEMENT_NAME)) ) {
+		// Unknow root element
+		return -1;
+	}
+
+	const XMLElement* hCommandNode = handler->FirstChildElement();
+
+	if( NULL == hCommandNode ) {
+		return -1;
+	}
+
+	if( 0 != memcmp(hCommandNode->Value(), MAIN_NODE_NAME, strlen(MAIN_NODE_NAME)) ) {
+		// Unknow command element
+		return -1;
+	}
+
+	err = parseCommandStructure(cmdTbl,hCommandNode);
 
 	return err;
 }

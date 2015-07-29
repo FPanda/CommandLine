@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arguments>
+    <command>
+        <commandname>f</commandname>
+        <parameternumber>2</parameternumber>
+        <handler>testFunc</handler>
+        <description>Test for the xml</description>
+    </command>
+</arguments>
