@@ -98,6 +98,8 @@ int parseCommandStructure(PCMD2PROCFUNC &cmdTbl, const XMLElement* hCommandNode)
 	}
 	else {
 		cmdTbl->nextPointer = pCmd2Func;
+
+		cmdTbl = pCmd2Func;
 	}
 
 	return 0;
@@ -134,5 +136,27 @@ int parseXmlFile(PCMD2PROCFUNC &cmdTbl) {
 
 	err = parseCommandStructure(cmdTbl,hCommandNode);
 
+	PCMD2PROCFUNC tmpTblPointer = NULL;
+
+	if( 0 != err ) {
+		tmpTblPointer = cmdTbl;
+	}
+
+	hCommandNode = hCommandNode->NextSiblingElement();
+
+	while( NULL != hCommandNode ) {
+		if( 0 != memcmp(hCommandNode->Value(), MAIN_NODE_NAME, strlen(MAIN_NODE_NAME)) ) {
+			// Unknow command element
+			hCommandNode = NULL;
+			continue;
+		}
+		
+		if( 0 != parseCommandStructure(tmpTblPointer, hCommandNode) ) {
+			hCommandNode = NULL;
+			continue;			
+		}
+	};
+
 	return err;
 }
+
