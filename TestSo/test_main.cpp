@@ -5,10 +5,10 @@
 int main(int argc, char* argv[])
 {
     PINPUT_CMD input = NULL;
-    initilize(NULL,"-");
-    getAllInputCmdList(argc, argv, input);
+    initilizeS("-");
+    getAllInputCmdListS(argc, argv, input);
     printf("%s", input->cmd);
-    deinitilize(input);
+    deinitilizeS(input);
     return 0;
 }
 

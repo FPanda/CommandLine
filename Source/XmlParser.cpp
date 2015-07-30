@@ -27,7 +27,7 @@ int loadXmlFile(const char* const filePath) {
 	return err;
 }
 
-int parseCommandStructure(PCMD2PROCFUNC &cmdTbl, const XMLElement* hCommandNode) {
+int parseCommandStructure(PCMD2PROCFUNC &cmdTbl, const XMLElement* hCommandNode, int delimeterSize) {
 	const XMLElement* name = hCommandNode->FirstChildElement();
 
 	if( NULL == name ) {
@@ -41,7 +41,7 @@ int parseCommandStructure(PCMD2PROCFUNC &cmdTbl, const XMLElement* hCommandNode)
 	
 	const char* cmd = name->GetText();
 
-	if( strlen(cmd) + 1 > MAX_INPUT_CMD_SIZE ) {
+	if( strlen(cmd) + 1 + delimeterSize > MAX_INPUT_CMD_SIZE ) {
 		return -1;
 	}
 
@@ -124,7 +124,7 @@ int parseCommandStructure(PCMD2PROCFUNC &cmdTbl, const XMLElement* hCommandNode)
 	return 0;
 }
 
-int parseXmlFile(PCMD2PROCFUNC &cmdTbl) {
+int parseXmlFile(PCMD2PROCFUNC &cmdTbl, int delimeterSize) {
 	int err = XML_NO_ERROR;
 
 	const XMLElement* handler = NULL;
@@ -153,7 +153,7 @@ int parseXmlFile(PCMD2PROCFUNC &cmdTbl) {
 		return -1;
 	}
 
-	err = parseCommandStructure(cmdTbl,hCommandNode);
+	err = parseCommandStructure(cmdTbl,hCommandNode,delimeterSize);
 
 	PCMD2PROCFUNC tmpTblPointer = NULL;
 
@@ -173,7 +173,7 @@ int parseXmlFile(PCMD2PROCFUNC &cmdTbl) {
 			continue;
 		}
 		
-		if( 0 != parseCommandStructure(tmpTblPointer, hCommandNode) ) {
+		if( 0 != parseCommandStructure(tmpTblPointer, hCommandNode,delimeterSize) ) {
 			hCommandNode = NULL;
 			continue;			
 		}
